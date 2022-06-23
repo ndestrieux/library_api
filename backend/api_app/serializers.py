@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from drf_writable_nested import WritableNestedModelSerializer
 
 from .models import Book, Author, Publisher
 
@@ -17,8 +16,8 @@ class PublisherSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    authors = AuthorSerializer(many=True, source='author_set')
-    publisher = PublisherSerializer()
+    authors = AuthorSerializer(many=True, source='author_set', required=False)
+    publisher = PublisherSerializer(required=False)
 
     class Meta:
         model = Book
@@ -30,10 +29,15 @@ class BookSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        author_data = validated_data.pop('author_set')
-        publisher_data = validated_data.pop('publisher')
+        """
+        Overwriting create function to manage nested data (authors and publisher)
+        """
         book = Book.objects.create(**validated_data)
-        for a in author_data:
-            book.author_set.add(Author.objects.create(**a))
-        book.publisher = Publisher.objects.create(**publisher_data)
+        if 'author_set' in validated_data.keys():
+            author_data = validated_data.pop('author_set')
+            for a in author_data:
+                book.author_set.add(Author.objects.create(**a))
+        if 'publisher' in validated_data.keys():
+            publisher_data = validated_data.pop('publisher')
+            book.publisher = Publisher.objects.create(**publisher_data)
         return book
