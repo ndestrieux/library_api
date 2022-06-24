@@ -22,6 +22,4 @@ urlpatterns = [
     # Books urls
     path('books/', BookListCreateAPIView.as_view()),
     path('books/<int:pk>/', BookDetailUpdateDestroyAPIView.as_view()),
-    path('books/<int:pk>/update/', BookDetailUpdateDestroyAPIView.as_view()),
-    path('books/<int:pk>/delete/', BookDetailUpdateDestroyAPIView.as_view()),
 ]
