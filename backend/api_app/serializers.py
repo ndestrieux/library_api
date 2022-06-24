@@ -17,7 +17,7 @@ class PublisherSerializer(serializers.ModelSerializer):
 
 class BookSerializer(serializers.ModelSerializer):
     authors = AuthorSerializer(many=True, source='author_set', required=False)
-    publisher = PublisherSerializer(required=False)
+    publisher = PublisherSerializer(required=False, allow_null=True)
 
     class Meta:
         model = Book
@@ -48,13 +48,16 @@ class BookSerializer(serializers.ModelSerializer):
         Overwriting update function to manage nested data (authors and publisher)
         """
         instance.title = validated_data.get('title', instance.title)
-        print(instance.title)
         instance.publication_year = validated_data.get('publication_year', instance.publication_year)
-        print(instance.publication_year)
-        authors = validated_data.get('author_set', instance.author_set)
-        publisher = validated_data.get('publisher', instance.publisher)
-        for author in authors:
-            instance.author_set.add(Author.objects.get_or_create(**author)[0])
-        instance.publisher = Publisher.objects.get_or_create(**publisher)[0]
+        authors = validated_data.get('author_set', None)
+        publisher = validated_data.get('publisher', None)
+        if authors:
+            if len(authors) == 0:
+                instance.author_set.clear()
+            else:
+                for author in authors:
+                    instance.author_set.add(Author.objects.get_or_create(**author)[0])
+        if publisher:
+            instance.publisher = Publisher.objects.get_or_create(**publisher)[0]
         instance.save()
         return instance
