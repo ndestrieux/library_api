@@ -6,7 +6,7 @@ from .models import Book, Author, Publisher, Album, Artist, Film, FilmDirector
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ["first_name", "last_name"]
+        fields = ["name"]
 
 
 class PublisherSerializer(serializers.ModelSerializer):
@@ -125,7 +125,7 @@ class AlbumSerializer(serializers.ModelSerializer):
 class FilmDirectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = FilmDirector
-        fields = ["first_name", "last_name"]
+        fields = ["name"]
 
 
 class FilmSerializer(serializers.ModelSerializer):

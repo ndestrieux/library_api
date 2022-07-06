@@ -24,13 +24,8 @@ class Book(models.Model):
 
 
 class Author(models.Model):
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
+    name = models.CharField(max_length=128)
     books = models.ManyToManyField(Book)
-
-    @property
-    def name(self):
-        return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
         return self.name
@@ -87,13 +82,8 @@ class Film(models.Model):
 
 
 class FilmDirector(models.Model):
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64)
     films = models.ManyToManyField(Film)
-
-    @property
-    def name(self):
-        return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
         return self.name
